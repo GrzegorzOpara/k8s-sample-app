@@ -7,14 +7,11 @@ COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
 # Copy your application code
-COPY . .
+COPY app/. .
 
 # Define the working directory for the container (optional)
 ENV PORT=8080
 EXPOSE 8080
 
-# Mount the local code directory as a volume
-VOLUME ["app"]
-
 # Run the Flask app in debug mode
-CMD ["python", "./app.py"]
+CMD ["python", "app.py"]

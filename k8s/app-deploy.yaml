@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-deployment
+  labels:
+    app: k8s-sample-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask
+  template:
+    metadata:
+      labels:
+        app: flask
+    spec:
+      containers:
+      - name: flask
+        image: grzegorzopara/k8s-sample-app:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: POSTGRES_CONN_STRING
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_CONN_STRING
