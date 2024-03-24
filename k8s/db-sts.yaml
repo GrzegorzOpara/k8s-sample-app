@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: db
-        image: postgres:16.0
+        image: postgres:16.1
         env:
         - name: POSTGRES_PASSWORD
           valueFrom:
