@@ -66,6 +66,29 @@ def get_user_by_id(id):
   # Return JSON response with user data
   return jsonify(hostname, user.to_dict()), 200
 
+
+@app.route('/user/<int:id>', methods=['PUT'])
+def update_user(id):
+    # Get user by ID
+    user = db.session.query(User).filter_by(id=id).first()
+
+    if not user:
+        return jsonify(hostname, {'message': 'User not found'}), 404
+
+    # Get data from request (assuming JSON format)
+    data = request.get_json()
+
+    # Update user details (check for presence in request data)
+    if 'username' in data:
+        user.username = data['username']
+    if 'email' in data:
+        user.email = data['email']
+
+    # Commit changes to the database
+    db.session.commit()
+
+    return jsonify(hostname, {'message': 'User updated successfully'}), 200
+
 @app.route('/user', methods=['POST'])
 def create_user():
   # Get user data from request body
