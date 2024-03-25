@@ -40,18 +40,18 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
-hostname = {"Message": f"app up and running successfully on {socket.gethostname()}"}
+meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {os.environ.get('APP_VERSION')}"}
 
 # Health check
 @app.route("/health")
 def home():
-    return jsonify(hostname)
+    return jsonify(meta)
 
 # Get all users
 @app.route("/user",methods=["GET"])
 def get_users():
     users = db.session.query(User).all()
-    return jsonify(hostname, [user.to_dict() for user in users]), 200
+    return jsonify(meta, [user.to_dict() for user in users]), 200
 
 # Get user by id
 @app.route('/user/<int:id>', methods=['GET'])
@@ -61,10 +61,10 @@ def get_user_by_id(id):
 
   # Check if user exists
   if not user:
-    return jsonify(hostname, {"error": "User not found"}), 404
+    return jsonify(meta, {"error": "User not found"}), 404
 
   # Return JSON response with user data
-  return jsonify(hostname, user.to_dict()), 200
+  return jsonify(meta, user.to_dict()), 200
 
 
 @app.route('/user/<int:id>', methods=['PUT'])
@@ -73,7 +73,7 @@ def update_user(id):
     user = db.session.query(User).filter_by(id=id).first()
 
     if not user:
-        return jsonify(hostname, {'message': 'User not found'}), 404
+        return jsonify(meta, {'message': 'User not found'}), 404
 
     # Get data from request (assuming JSON format)
     data = request.get_json()
@@ -87,7 +87,7 @@ def update_user(id):
     # Commit changes to the database
     db.session.commit()
 
-    return jsonify(hostname, {'message': 'User updated successfully'}), 200
+    return jsonify(meta, {'message': 'User updated successfully'}), 200
 
 @app.route('/user', methods=['POST'])
 def create_user():
@@ -98,7 +98,7 @@ def create_user():
 
   # Check for required fields (assuming name and email are required)
   if not data or not data.get('name') or not data.get('email'):
-    return jsonify(hostname, {"error": "Missing required fields"}), 400  # Bad request
+    return jsonify(meta, {"error": "Missing required fields"}), 400  # Bad request
 
   # Create a new user object
   user = User(name=data['name'], email=data['email'])
@@ -109,13 +109,13 @@ def create_user():
     db.session.commit()
   except IntegrityError:
     # Handle potential duplicate email or other integrity errors
-    return jsonify(hostname, {"error": "User creation failed"}), 409  # Conflict
+    return jsonify(meta, {"error": "User creation failed"}), 409  # Conflict
 
   # Convert user object to a dictionary
   user_data = user.to_dict()
 
   # Return JSON response with the created user data
-  return jsonify(hostname, user_data), 201  # Created status code
+  return jsonify(meta, user_data), 201  # Created status code
 
 @app.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
@@ -124,17 +124,17 @@ def delete_user(user_id):
 
   # Check if user exists
   if not user:
-    return jsonify(hostname ,{"error": "User not found"}), 404  # Not Found
+    return jsonify(meta ,{"error": "User not found"}), 404  # Not Found
 
   # Delete the user
   try:
     db.session.delete(user)
     db.session.commit()
   except IntegrityError as e:
-    return jsonify(hostname, {"error": f"User deletion failed: {e}"}), 409  # Conflict
+    return jsonify(meta, {"error": f"User deletion failed: {e}"}), 409  # Conflict
 
   # Return a success message (optional)
-  return jsonify(hostname, {"message": "User deleted successfully"}), 204  # No Content
+  return jsonify(meta, {"message": "User deleted successfully"}), 204  # No Content
 
 
 

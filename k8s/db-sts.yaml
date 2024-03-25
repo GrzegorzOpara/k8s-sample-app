@@ -15,6 +15,15 @@ spec:
       labels:
         app: postgres
     spec:
+      affinity:  # Define affinity rules here
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: app  # Replace with your node label key
+                operator: In
+                values:
+                - db
       containers:
       - name: db
         image: postgres:16.1

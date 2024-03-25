@@ -16,9 +16,12 @@ spec:
     spec:
       containers:
       - name: flask
-        image: grzegorzopara/k8s-sample-app:1.0
+        image: grzegorzopara/k8s-sample-app:1.2
         ports:
         - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: app-cm
         env:
         - name: POSTGRES_CONN_STRING
           valueFrom:
