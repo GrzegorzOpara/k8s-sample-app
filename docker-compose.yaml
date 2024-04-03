@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build: .
-    # image: grzegorzopara/k8s-sample-app:1.0
+    image: grzegorzopara/k8s-sample-app:1.3
     command: python app.py
     volumes: # mounts local folder for quick development
        - ./app:/app

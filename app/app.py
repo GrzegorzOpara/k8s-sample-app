@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.exc import IntegrityError
+from prometheus_flask_exporter import PrometheusMetrics
 
 import socket
 import os
@@ -14,6 +15,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+metrics=PrometheusMetrics(app)
+metrics.info('app_info', 'Application info', version='1.0.3')
+
 
 # SQLAlchemy
 class Base(DeclarativeBase):
@@ -137,6 +141,5 @@ def delete_user(user_id):
   return jsonify(meta, {"message": "User deleted successfully"}), 204  # No Content
 
 
-
 if __name__=="__main__":
-    app.run(debug=True,host="0.0.0.0",port=8080) 
+    app.run(debug=False,host="0.0.0.0",port=8080) 
