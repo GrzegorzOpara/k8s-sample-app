@@ -65,7 +65,7 @@ CREATE DATABASE appdb;
 CREATE USER appuser WITH PASSWORD '<put the appuser password here>';
 GRANT ALL PRIVILEGES ON DATABASE appdb to appuser;
 \c appdb
-GRANT USAGE, CREATE ON SCHEMA public TO appuser; on appdb;
+GRANT USAGE, CREATE ON SCHEMA public TO appuser;
 GRANT ALL ON SCHEMA public TO appuser
 \q
 ```
