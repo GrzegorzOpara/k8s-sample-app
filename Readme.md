@@ -16,7 +16,7 @@ gcloud container clusters get-credentials $CLUSTER_NAME
 kubectl create secret generic db-secret \ 
 --from-literal=POSTGRES_CONN_STRING='postgresql://<db app user name>:<db app user password>@db/appdb' \ 
 --from-literal=POSTGRES_PASSWORD='<postgres root password>' \
---from-literal=POSTGRES_EXPORTER_CONN_STRING='postgresql://root:<postgres root password>@db/appdb?sslmode=disable' 
+--from-literal=POSTGRES_EXPORTER_CONN_STRING='postgresql://postrges:<postgres root password>@db/appdb?sslmode=disable' 
 ```
 ## Database deployment
 ### Label one of the nodes with 'app=db' for db pod node affinity
@@ -28,9 +28,20 @@ kubectl label nodes $node_name app=db
 ```sh
 kubectl apply -f ./k8s/db-cm.yaml
 ```
+### Deploy persistent volume for db (minikube only!)
+#### GKE
+```sh
+kubectl apply -f ./k8s/db-pv-minikube.yaml
+```
+
 ### Deploy persistent volume claim for db
+#### GKE
 ```sh
 kubectl apply -f ./k8s/db-pvc-gke.yaml
+```
+#### minikube
+```sh
+kubectl apply -f ./k8s/db-pvc-minikube.yaml
 ```
 ### Deploy service for db
 ```sh
