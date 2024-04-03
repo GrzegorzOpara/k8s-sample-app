@@ -28,3 +28,10 @@ spec:
             secretKeyRef:
               name: db-secret
               key: POSTGRES_CONN_STRING
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"

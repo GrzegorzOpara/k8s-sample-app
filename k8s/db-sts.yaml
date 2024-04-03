@@ -42,6 +42,33 @@ spec:
         volumeMounts:
         - name: db-data
           mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+      - name: exporter
+        image: prometheuscommunity/postgres-exporter:latest
+        args:
+          - --collector.stat_statements
+        env:
+        - name: DATA_SOURCE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_EXPORTER_CONN_STRING
+        ports:
+        - containerPort: 9187
+          name: prometheus
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
       volumes:
       - name: db-data
         persistentVolumeClaim:
