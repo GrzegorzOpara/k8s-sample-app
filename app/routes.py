@@ -1,28 +1,30 @@
-from flask import Flask, jsonify, current_app, request, Blueprint
+from flask import jsonify, current_app, request, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from app.models import User
 from sqlalchemy.exc import IntegrityError
 from app import db
 import socket
 
-bp = Blueprint('api', __name__)
-meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
-# Health check
+bp = Blueprint('bp', __name__)
 
+# Health check
 @bp.route("/health")
 def home():
+    meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
     return jsonify(meta)
 
 # Get all users
 @bp.route("/user",methods=["GET"])
 def get_users():
     users = db.session.query(User).all()
+    meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
     return jsonify(meta, [user.to_dict() for user in users]), 200
 
 # Get user by id
 @bp.route('/user/<int:id>', methods=['GET'])
 def get_user_by_id(id):
   # Fetch user by ID from the database
+  meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
   user = db.session.query(User).filter(User.id == id).first()
 
   # Check if user exists
@@ -36,6 +38,7 @@ def get_user_by_id(id):
 @bp.route('/user/<int:id>', methods=['PUT'])
 def update_user(id):
     # Get user by ID
+    meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
     user = db.session.query(User).filter_by(id=id).first()
 
     if not user:
@@ -58,6 +61,7 @@ def update_user(id):
 @bp.route('/user', methods=['POST'])
 def create_user():
   # Get user data from request body
+  meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
   data = request.get_json()  # Parse JSON data from request
 
   print(data)
@@ -86,6 +90,7 @@ def create_user():
 @bp.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
   # Get user by ID
+  meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
   user = db.session.query(User).get(user_id)
 
   # Check if user exists
