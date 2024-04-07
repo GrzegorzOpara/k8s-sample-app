@@ -2,19 +2,20 @@ from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from prometheus_flask_exporter import PrometheusMetrics
-from config import config
+from config import configs
 
 db = SQLAlchemy()
 
-def create_app():
+def create_app(config):
   app_instance = Flask(__name__)
-  app_instance.config.from_object(config)
+  app_instance.config.from_object(configs[config])
 
   db.init_app(app_instance)
 
   # Register Prometheus metrics (if applicable)
-  metrics = PrometheusMetrics(app_instance)
-  metrics.info('app_info', 'Application info', version=app_instance.config['APP_VERSION'])
+  if app_instance.config['PROMETHEUS_EXPORTER']:
+    metrics = PrometheusMetrics(app_instance)
+    metrics.info('app_info', 'Application info', version=app_instance.config['APP_VERSION'])
 
   # Register User model with SQLAlchemy
   from . import routes  # Assuming routes are defined in routes.py

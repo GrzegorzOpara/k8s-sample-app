@@ -1,4 +1,4 @@
-from flask import jsonify, current_app, request, Blueprint
+from flask import jsonify, current_app, request, Blueprint, make_response
 from flask_sqlalchemy import SQLAlchemy
 from app.models import User
 from sqlalchemy.exc import IntegrityError
@@ -10,39 +10,38 @@ bp = Blueprint('bp', __name__)
 # Health check
 @bp.route("/health")
 def home():
-    meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
-    return jsonify(meta)
+    
+    return make_response((jsonify({'status': 'healthy'}), 200, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
 # Get all users
 @bp.route("/user",methods=["GET"])
 def get_users():
     users = db.session.query(User).all()
-    meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
-    return jsonify(meta, [user.to_dict() for user in users]), 200
+    
+    return make_response((jsonify([user.to_dict() for user in users]), 200, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
 # Get user by id
 @bp.route('/user/<int:id>', methods=['GET'])
 def get_user_by_id(id):
   # Fetch user by ID from the database
-  meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
+  
   user = db.session.query(User).filter(User.id == id).first()
 
   # Check if user exists
   if not user:
-    return jsonify(meta, {"error": "User not found"}), 404
+    return make_response((jsonify({"error": "User not found"}), 404, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
   # Return JSON response with user data
-  return jsonify(meta, user.to_dict()), 200
+  return make_response((jsonify(user.to_dict()), 200, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
 
 @bp.route('/user/<int:id>', methods=['PUT'])
 def update_user(id):
     # Get user by ID
-    meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
     user = db.session.query(User).filter_by(id=id).first()
 
     if not user:
-        return jsonify(meta, {'message': 'User not found'}), 404
+        return make_response((jsonify({'message': 'User not found'}), 404, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
     # Get data from request (assuming JSON format)
     data = request.get_json()
@@ -55,20 +54,19 @@ def update_user(id):
 
     # Commit changes to the database
     db.session.commit()
-
-    return jsonify(meta, {'message': 'User updated successfully'}), 200
+    return make_response((jsonify({'message': 'User updated successfully'}), 200, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
 @bp.route('/user', methods=['POST'])
 def create_user():
   # Get user data from request body
-  meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
+  
   data = request.get_json()  # Parse JSON data from request
 
   print(data)
 
   # Check for required fields (assuming name and email are required)
   if not data or not data.get('name') or not data.get('email'):
-    return jsonify(meta, {"error": "Missing required fields"}), 400  # Bad request
+    return make_response((jsonify({'error': 'missing data.'}), 404, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
   # Create a new user object
   user = User(name=data['name'], email=data['email'])
@@ -79,30 +77,30 @@ def create_user():
     db.session.commit()
   except IntegrityError:
     # Handle potential duplicate email or other integrity errors
-    return jsonify(meta, {"error": "User creation failed"}), 409  # Conflict
+    return make_response((jsonify({'message': 'user creation failed.'}), 409, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
   # Convert user object to a dictionary
   user_data = user.to_dict()
 
   # Return JSON response with the created user data
-  return jsonify(meta, user_data), 201  # Created status code
+  return make_response((jsonify({'message': 'user created successfully'}), 201, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
 @bp.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
   # Get user by ID
-  meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
+  
   user = db.session.query(User).get(user_id)
 
   # Check if user exists
   if not user:
-    return jsonify(meta ,{"error": "User not found"}), 404  # Not Found
+    return make_response((jsonify({'error': 'user not found.'}), 409, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
   # Delete the user
   try:
     db.session.delete(user)
     db.session.commit()
   except IntegrityError as e:
-    return jsonify(meta, {"error": f"User deletion failed: {e}"}), 409  # Conflict
+    return make_response((jsonify({"error": f"user deletion failed: {e}"}), 409, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
   # Return a success message (optional)
-  return jsonify(meta, {"message": "User deleted successfully"}), 204  # No Content
+  return make_response((jsonify({'message': 'user deleted successfully'}), 204, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
