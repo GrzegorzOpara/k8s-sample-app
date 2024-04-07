@@ -1,64 +1,26 @@
-from flask import Flask, jsonify, request
-
+from flask import Flask, jsonify, current_app, request, Blueprint
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from app.models import User
 from sqlalchemy.exc import IntegrityError
-from prometheus_flask_exporter import PrometheusMetrics
-
+from app import db
 import socket
-import os
 
-from dotenv import load_dotenv
-
-
-# Env varibales
-load_dotenv()
-
-app = Flask(__name__)
-metrics=PrometheusMetrics(app)
-metrics.info('app_info', 'Application info', version='1.0.3')
-
-
-# SQLAlchemy
-class Base(DeclarativeBase):
-    pass
-
-db = SQLAlchemy(model_class=Base)
-
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("POSTGRES_CONN_STRING")
-db.init_app(app)
-
-# Model
-class User(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(unique=True)
-    email: Mapped[str]
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "email": self.email,
-        }
-
-with app.app_context():
-    db.create_all()
-
-meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {os.environ.get('APP_VERSION')}"}
-
+bp = Blueprint('api', __name__)
+meta = {"Message": f"app up and running successfully on {socket.gethostname()}. App version: {current_app.config['APP_VERSION']}"}
 # Health check
-@app.route("/health")
+
+@bp.route("/health")
 def home():
     return jsonify(meta)
 
 # Get all users
-@app.route("/user",methods=["GET"])
+@bp.route("/user",methods=["GET"])
 def get_users():
     users = db.session.query(User).all()
     return jsonify(meta, [user.to_dict() for user in users]), 200
 
 # Get user by id
-@app.route('/user/<int:id>', methods=['GET'])
+@bp.route('/user/<int:id>', methods=['GET'])
 def get_user_by_id(id):
   # Fetch user by ID from the database
   user = db.session.query(User).filter(User.id == id).first()
@@ -71,7 +33,7 @@ def get_user_by_id(id):
   return jsonify(meta, user.to_dict()), 200
 
 
-@app.route('/user/<int:id>', methods=['PUT'])
+@bp.route('/user/<int:id>', methods=['PUT'])
 def update_user(id):
     # Get user by ID
     user = db.session.query(User).filter_by(id=id).first()
@@ -93,7 +55,7 @@ def update_user(id):
 
     return jsonify(meta, {'message': 'User updated successfully'}), 200
 
-@app.route('/user', methods=['POST'])
+@bp.route('/user', methods=['POST'])
 def create_user():
   # Get user data from request body
   data = request.get_json()  # Parse JSON data from request
@@ -121,7 +83,7 @@ def create_user():
   # Return JSON response with the created user data
   return jsonify(meta, user_data), 201  # Created status code
 
-@app.route('/user/<int:user_id>', methods=['DELETE'])
+@bp.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
   # Get user by ID
   user = db.session.query(User).get(user_id)
@@ -139,7 +101,3 @@ def delete_user(user_id):
 
   # Return a success message (optional)
   return jsonify(meta, {"message": "User deleted successfully"}), 204  # No Content
-
-
-if __name__=="__main__":
-    app.run(debug=False,host="0.0.0.0",port=8080) 
