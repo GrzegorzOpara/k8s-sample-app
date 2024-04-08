@@ -41,7 +41,7 @@ def update_user(id):
     user = db.session.query(User).filter_by(id=id).first()
 
     if not user:
-        return make_response((jsonify({'message': 'User not found'}), 404, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
+        return make_response((jsonify({'error': 'User not found'}), 404, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
     # Get data from request (assuming JSON format)
     data = request.get_json()
@@ -77,7 +77,7 @@ def create_user():
     db.session.commit()
   except IntegrityError:
     # Handle potential duplicate email or other integrity errors
-    return make_response((jsonify({'message': 'user creation failed.'}), 409, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
+    return make_response((jsonify({'error': 'user creation failed.'}), 409, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
   # Convert user object to a dictionary
   user_data = user.to_dict()
@@ -89,7 +89,7 @@ def create_user():
 def delete_user(user_id):
   # Get user by ID
   
-  user = db.session.query(User).get(user_id)
+  user = db.session.get(User, user_id)
 
   # Check if user exists
   if not user:
@@ -103,4 +103,4 @@ def delete_user(user_id):
     return make_response((jsonify({"error": f"user deletion failed: {e}"}), 409, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
 
   # Return a success message (optional)
-  return make_response((jsonify({'message': 'user deleted successfully'}), 204, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
+  return make_response((jsonify({'message': 'user deleted successfully'}), 200, {'Content-Type': 'application/json', 'Host': socket.gethostname(), 'Version': current_app.config['APP_VERSION']}))
