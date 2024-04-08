@@ -14,4 +14,4 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Run the Flask app in debug mode
-CMD ["python", "main.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers=2", "--threads=4", "wsgi:app"]
