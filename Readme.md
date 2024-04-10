@@ -127,5 +127,6 @@ gcloud builds triggers create github \
   --build-config=cloudbuild.yaml \
   --repo-owner=GrzegorzOpara \
   --name="app-release-pipeline" \
+  --description="application release pipeline" \
   --substitutions=_APP_NAME=k8s-sample-app,_ARTIFACT_REGISTRY_REGION=europe-west1,_ARTIFACT_REGISTRY_REPO=dragon-ar,_BUCKET_NAME=gopara-tf-sandbox-gcs-cb-logs
 ```
