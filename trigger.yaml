@@ -1,0 +1,13 @@
+filename: cloudbuild.yaml
+github:
+  name: k8s-sample-app
+  owner: GrzegorzOpara
+  push:
+    tag: ^\d+\.\d+\.\d+\$
+name: app-release-pipeline
+substitutions:
+  "_APP_NAME": "k8s-sample-app",
+  "_ARTIFACT_REGISTRY_REGION": "europe-west1",
+  "_ARTIFACT_REGISTRY_REPO": "dragon-ar"
+  "_BUCKET_NAME": "gopara-tf-sandbox-gcs-cb-logs"
+description: "Application release pipeline"

@@ -1,0 +1,11 @@
+title: cb_gcs_mgt
+description: To store Cloud Build logs in the dedicated bucket
+stage: GA
+includedPermissions:
+- storage.buckets.create
+- storage.buckets.list
+- storage.objects.get
+- storage.objects.create
+- storage.objects.delete
+- storage.objects.update
+- storage.objects.list
