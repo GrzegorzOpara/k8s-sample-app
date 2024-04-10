@@ -116,3 +116,16 @@ gcloud iam roles create cb_gcs_mgt --project=$PROJECT_ID --file=./misc/cb_gcs_ro
 
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$CLOUDBUILD_SA --role=projects/$PROJECT_ID/roles/cb_gcs_mgt 
 ```
+3. Deploy Cloud Build Trigger
+
+```sh
+gcloud builds triggers create github \
+  --region europe-west1 \
+  --repo-name="k8s-sample-app" \
+  --tag-pattern='^\d+\.\d+\.\d+$' \
+  --build-config=cloudbuild.yaml \
+  --repo-owner=GrzegorzOpara \
+  --name="app-release-pipeline" \
+  --description="Application release pipeline" \
+  --substitutions=_APP_NAME=k8s-sample-app,_ARTIFACT_REGISTRY_REGION=europe-west1,_ARTIFACT_REGISTRY_REPO=dragon-ar,_BUCKET_NAME=gopara-tf-sandbox-gcs-cb-logs
+```

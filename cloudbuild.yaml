@@ -55,4 +55,5 @@ artifacts:
 # Store images in Google Artifact Registry 
 images:
   - '${_ARTIFACT_REGISTRY_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:${TAG_NAME}'
+  - '${_ARTIFACT_REGISTRY_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:latest'
 # [END cloudbuild_python_yaml]
