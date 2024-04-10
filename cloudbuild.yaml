@@ -38,12 +38,6 @@ steps:
             '.']
   # [END cloudbuild_python_image_yaml]
 
-  # [START cloudbuild_python_push_yaml]
-  # Docker push to Google Artifact Registry
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   args: ['push',  '${_ARTIFACT_REGISTRY_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:${TAG_NAME}']
-  # [END cloudbuild_python_push_yaml]
-  
 # [START cloudbuild_python_logs_yaml]
 # Save test logs to Google Cloud Storage
 artifacts:
