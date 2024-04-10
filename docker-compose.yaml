@@ -26,5 +26,5 @@ volumes:
     driver: local # Define the driver and options under the volume name
     driver_opts:
       type: none
-      device: /home/gelo/k8s/volume/postgresql
+      device: $DB_VOLUME_PATH
       o: bind
