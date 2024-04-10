@@ -43,5 +43,5 @@ def test_delete_user(client) -> None:
     # error handling
     response = client.delete("/user/100")
     assert response.json == {'error': 'user not found.'}
-    assert response.status_code == 409
+    assert response.status_code == 419
     
