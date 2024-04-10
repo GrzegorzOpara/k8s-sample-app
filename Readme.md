@@ -98,7 +98,7 @@ kubectl apply -f ./k8s/app-deploy.yaml
 ## Application deployment - automated
 
 ### Bucket to store unit / integration test results
-1. GCS Bucket to store tf state file: 
+#### 1. GCS Bucket to store tf state file: 
 
   ```sh
   PROJECT_ID=$(gcloud config get-value project)
@@ -106,7 +106,8 @@ kubectl apply -f ./k8s/app-deploy.yaml
 
   gcloud storage buckets create gs://$PROJECT_ID-gcs-cb-logs --project $PROJECT_ID --location $REGION --uniform-bucket-level-access
   ```
- 2. Grant permissions to Cloud Build Service Account to access GCS Bucket with state file (https://cloud.google.com/docs/terraform/resource-management/store-state#before_you_begin)
+#### 2. Grant permissions 
+Grant permissions to Cloud Build Service Account to access GCS Bucket with state file (https://cloud.google.com/docs/terraform/resource-management/store-state#before_you_begin)
 
 ```sh
 PROJECT_ID=$(gcloud config get-value project)
@@ -117,7 +118,7 @@ gcloud iam roles create cb_gcs_mgt --project=$PROJECT_ID --file=./misc/cb_gcs_ro
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$CLOUDBUILD_SA --role=projects/$PROJECT_ID/roles/cb_gcs_mgt 
 ```
 
-3. Deploy Cloud Build Trigger
+#### 3. Deploy Cloud Build Trigger
 
 ```sh
 gcloud builds triggers create github \
