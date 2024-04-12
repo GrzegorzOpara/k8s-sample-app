@@ -69,7 +69,7 @@ CREATE USER appuser WITH PASSWORD '<put the appuser password here>';
 GRANT ALL PRIVILEGES ON DATABASE appdb to appuser;
 \c appdb
 GRANT USAGE, CREATE ON SCHEMA public TO appuser;
-GRANT ALL ON SCHEMA public TO appuser
+GRANT ALL ON SCHEMA public TO appuser;
 \q
 ```
 ```sh
@@ -131,3 +131,10 @@ gcloud builds triggers create github \
   --description="application release pipeline" \
   --substitutions=_APP_NAME=k8s-sample-app,_ARTIFACT_REGISTRY_REGION=europe-west1,_ARTIFACT_REGISTRY_REPO=dragon-ar,_BUCKET_NAME=gopara-tf-sandbox-gcs-cb-logs
 ```
+
+### Process
+1. Developer completes unit tests locally and commits to master
+2. Release manager creates release candidate branch, tags it with **Major**.**Minor** tag
+3. Build process is triggered by the tag, image stored in the artifact registry, app deployed to staging
+4. If any bug is identified developer fixes it in master and then cherry-pick to release branch and creates a new tag Major.Minor.**Patch** tag
+5. Build process is triggered by the tag, image stored in the artifact registry, app deployed to prod
