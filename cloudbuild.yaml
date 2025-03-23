@@ -28,6 +28,6 @@ artifacts:
     location: gs://${_BUCKET_NAME}/
     paths:
       - ${TAG_NAME}_test_log.xml
-mages:
+images:
   - '${_ARTIFACT_REGISTRY_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:${TAG_NAME}'
   - '${_ARTIFACT_REGISTRY_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:latest'
