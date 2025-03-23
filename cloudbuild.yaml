@@ -21,7 +21,7 @@ steps:
     id: image-push
     args:
     - 'push'
-    - '${_ARTIFACT_REGISTRY_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:latest', 
+    - '${_ARTIFACT_REGISTRY_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:latest' 
 
 artifacts:
   objects:
