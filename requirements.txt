@@ -16,6 +16,6 @@ psycopg2-binary==2.9.9
 pytest==8.1.1
 pytest-mock==3.14.0
 python-dotenv==1.0.1
-SQLAlchemy==2.0.28
+SQLAlchemy==2.0.39
 typing_extensions==4.10.0
 Werkzeug==3.0.1
